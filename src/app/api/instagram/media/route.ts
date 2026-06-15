@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
-import { getAccountsByUser } from '@/lib/db'
+import { getAccountsByUser, initDb } from '@/lib/db'
 import { getIGMedia } from '@/lib/instagram'
 import { rateLimit, getClientIP } from '@/lib/rateLimit'
 
@@ -18,7 +18,8 @@ export async function GET(request: NextRequest) {
 
   if (!accountId) return NextResponse.json({ error: 'accountId é obrigatório' }, { status: 400 })
 
-  const accounts = getAccountsByUser(session.userId)
+  await initDb()
+  const accounts = await getAccountsByUser(session.userId)
   const account = accounts.find(a => a.id === accountId)
 
   if (!account) return NextResponse.json({ error: 'Conta não encontrada' }, { status: 404 })

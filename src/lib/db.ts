@@ -184,7 +184,8 @@ export async function updatePost(id: string, data: Partial<Post>): Promise<Post 
       comments = COALESCE(${data.comments ?? null}, comments)
     WHERE id = ${id}
   `
-  return getPostById(id) ?? null
+  const updated = await getPostById(id)
+  return updated ?? null
 }
 
 export async function deletePost(id: string): Promise<boolean> {

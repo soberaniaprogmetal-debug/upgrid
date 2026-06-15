@@ -29,24 +29,8 @@ export async function verifyToken(token: string): Promise<JWTPayload | null> {
 }
 
 export async function getSession(): Promise<JWTPayload | null> {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const token = cookieStore.get('auth_token')?.value
   if (!token) return null
   return verifyToken(token)
-}
-
-export function setAuthCookie(token: string) {
-  const cookieStore = cookies()
-  cookieStore.set('auth_token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 7, // 7 dias
-    path: '/',
-  })
-}
-
-export function clearAuthCookie() {
-  const cookieStore = cookies()
-  cookieStore.delete('auth_token')
 }
